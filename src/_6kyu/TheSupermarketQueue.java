@@ -1,0 +1,87 @@
+package _6kyu;
+
+//Description:
+//
+//        There is a queue for the self-checkout tills at the supermarket. Your task is write a function to calculate the total time required for all the customers to check out!
+//        input
+//
+//        customers: an array of positive integers representing the queue. Each integer represents a customer, and its value is the amount of time they require to check out.
+//        n: a positive integer, the number of checkout tills.
+//
+//        output
+//
+//        The function should return an integer, the total time required.
+//        Important
+//
+//        Please look at the examples and clarifications below, to ensure you understand the task correctly :)
+//        Examples
+//
+//        queueTime([5,3,4], 1)
+//// should return 12
+//// because when there is 1 till, the total time is just the sum of the times
+//
+//        queueTime([10,2,3,3], 2)
+//// should return 10
+//// because here n=2 and the 2nd, 3rd, and 4th people in the
+//// queue finish before the 1st person has finished.
+//
+//        queueTime([2,3,10], 2)
+//// should return 12
+//
+//        Clarifications
+//
+//        There is only ONE queue serving many tills, and
+//        The order of the queue NEVER changes, and
+//        The front person in the queue (i.e. the first element in the array/list) proceeds to a till as soon as it becomes free.
+//
+//        N.B. You should assume that all the test input will be valid, as specified above.
+//
+//        P.S. The situation in this kata can be likened to the more-computer-science-related idea of a thread pool, with relation to running multiple processes at the same time: https://en.wikipedia.org/wiki/Thread_pool
+
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+
+public class TheSupermarketQueue {
+    public class Solution {
+        public static int solveSuperMarketQueue(int[] customers, int n) {
+            if(customers.length == 0) return 0;
+            ArrayList<Integer> tills = new ArrayList<>();
+            LinkedList<Integer> cstmrs = new LinkedList<>();
+            int totalTime = 0;
+            for (int i = 0; i < n; i++) {
+                tills.add(0);
+            }
+            for (int i : customers) {
+                cstmrs.add(i);
+            }
+
+            while (cstmrs.size() > 0 || Collections.max(tills) > 0) {
+                if (tills.contains(0) && cstmrs.size() > 0) {
+                    tills.set(tills.indexOf(0),cstmrs.pop());
+                } else {
+                    int min = Collections.min(tills);
+                    if(min == 0) min = Collections.max(tills);
+                    totalTime += min;
+                    for (int i = 0; i < tills.size(); i++) {
+                        tills.set(i,tills.get(i)-min);
+                    }
+                }
+            }
+
+            return totalTime;
+        }
+
+
+    }
+        public static void main(String[] args) {
+            System.out.println(Solution.solveSuperMarketQueue(new int[]{5, 3, 4}, 1));
+            System.out.println(Solution.solveSuperMarketQueue(new int[]{10, 2, 3, 3}, 2));
+            System.out.println(Solution.solveSuperMarketQueue(new int[]{2, 3, 10}, 2));
+            System.out.println(Solution.solveSuperMarketQueue(new int[]{2, 2, 3, 3, 4, 4}, 2));
+            System.out.println(Solution.solveSuperMarketQueue(new int[]{}, 1));
+            System.out.println(Solution.solveSuperMarketQueue(new int[]{1, 2, 3, 4, 5}, 1));
+
+    }
+}
